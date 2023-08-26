@@ -1,6 +1,7 @@
 package com.priceactiontrader.priceaction.service;
 
 import com.priceactiontrader.priceaction.model.PriceAction;
+import com.priceactiontrader.priceaction.model.PriceActionM1;
 import com.priceactiontrader.priceaction.repository.PriceActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,17 @@ public class PriceActionServiceImplementation implements PriceActionService {
     private PriceActionRepository priceActionRepository;
 
     @Override
-    public PriceAction savePriceAction(PriceAction priceAction) {
+    public PriceActionM1 savePriceAction(PriceActionM1 priceAction) {
         return priceActionRepository.save(priceAction);
     }
 
     @Override
-    public List<PriceAction> getAllPriceAction() {
+    public List<PriceActionM1> savePriceActions(List<PriceActionM1> priceActions) {
+        return priceActionRepository.saveAll(priceActions);
+    }
+
+    @Override
+    public List<PriceActionM1> getAllPriceAction() {
         return priceActionRepository.findAll();
     }
 
@@ -33,8 +39,8 @@ public class PriceActionServiceImplementation implements PriceActionService {
     }
 
     @Override
-    public void saveOrUpdate(PriceAction priceaction, int id) {
-        PriceAction getPriceAction = priceActionRepository.getReferenceById(id);
+    public void saveOrUpdate(PriceActionM1 priceaction, int id) {
+        PriceActionM1 getPriceAction = priceActionRepository.getReferenceById(id);
         getPriceAction.setDescription(priceaction.getDescription());
         getPriceAction.setPublishedAt(priceaction.getPublishedAt());
         getPriceAction.setTitle(priceaction.getTitle());
