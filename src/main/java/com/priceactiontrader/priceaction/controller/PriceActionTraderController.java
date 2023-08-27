@@ -5,11 +5,17 @@ import java.lang.reflect.Field;
 import com.priceactiontrader.priceaction.model.PriceActionM1;
 import com.priceactiontrader.priceaction.service.PriceActionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.function.Function;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/priceaction")
@@ -21,8 +27,50 @@ public class PriceActionTraderController {
     // get all priceaction from end point
     // http://localhost:{{port}}/api/v1/priceaction
     @GetMapping("/getAll")
-    public List<PriceActionM1> getAllNewsArticles() {
-        return priceActionService.getAllPriceAction();
+    public List<PriceActionM1> getAllPriceActions(
+            @RequestParam Map<String, String> filters,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+        List<PriceActionM1> allPriceActions = priceActionService.getAllPriceAction();
+
+        List<PriceActionM1> filteredPriceActions = allPriceActions.stream()
+                .filter(priceAction -> matchesFilters(priceAction, filters))
+                .collect(Collectors.toList());
+        int startIndex = page * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, filteredPriceActions.size());
+        return filteredPriceActions.subList(startIndex, endIndex);
+    }
+
+    private boolean matchesFilters(PriceActionM1 priceAction, Map<String, String> filters) {
+        Map<String, Function<PriceActionM1, String>> filterMappings = new HashMap<>();
+        filterMappings.put("id", action -> String.valueOf(action.getId()));
+        filterMappings.put("name", PriceActionM1::getName);
+        filterMappings.put("author", PriceActionM1::getAuthor);
+        filterMappings.put("title", PriceActionM1::getTitle);
+        filterMappings.put("description", PriceActionM1::getDescription);
+        filterMappings.put("url", PriceActionM1::getUrl);
+        filterMappings.put("urlToImage", PriceActionM1::getUrlToImage);
+        filterMappings.put("publishedAt", PriceActionM1::getPublishedAt);
+        filterMappings.put("content", PriceActionM1::getContent);
+
+        for (Map.Entry<String, String> entry : filters.entrySet()) {
+            String field = entry.getKey();
+            String value = entry.getValue();
+
+            if (!isValidFilterField(field)) {
+                continue;
+            }
+            Function<PriceActionM1, String> getter = filterMappings.get(field);
+            if (getter != null && !getter.apply(priceAction).equals(value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidFilterField(String field) {
+        return Arrays.asList("id", "name", "author", "title", "description", "url", "urlToImage", "publishedAt", "content")
+                .contains(field);
     }
 
     // add new priceaction to get point

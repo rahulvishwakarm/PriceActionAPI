@@ -1,9 +1,10 @@
 package com.priceactiontrader.priceaction.service;
 
-import com.priceactiontrader.priceaction.model.PriceAction;
+import org.springframework.data.domain.PageRequest;
 import com.priceactiontrader.priceaction.model.PriceActionM1;
 import com.priceactiontrader.priceaction.repository.PriceActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

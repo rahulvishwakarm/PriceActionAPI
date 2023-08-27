@@ -2,7 +2,10 @@ package com.priceactiontrader.priceaction.service;
 
 import com.priceactiontrader.priceaction.model.PriceAction;
 import com.priceactiontrader.priceaction.model.PriceActionM1;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PriceActionService {
