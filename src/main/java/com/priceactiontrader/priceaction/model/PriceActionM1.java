@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @Entity
 public class PriceActionM1 {
@@ -16,6 +20,7 @@ public class PriceActionM1 {
     public int getId() {
         return id;
     }
+
 
     public void setId(int id) {
         this.id = id;
@@ -34,7 +39,8 @@ public class PriceActionM1 {
     private String description;
     private String url;
     private String urlToImage;
-    private String publishedAt;
+//    private String publishedAt;
+    private Date publishedAt;
     private String content;
 
     public String getAuthor() {
@@ -77,11 +83,20 @@ public class PriceActionM1 {
         this.urlToImage = urlToImage;
     }
 
-    public String getPublishedAt() {
+//    public String getPublishedAt() {
+//        // Create a ZonedDateTime object representing the current date and time
+//        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+//
+//        // Format the date and time as a string without 'Z' at the end
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+//        return now.format(formatter);
+//    }
+
+    public Date getPublishedAt() {
         return publishedAt;
     }
 
-    public void setPublishedAt(String publishedAt) {
+    public void setPublishedAt(Date publishedAt) {
         this.publishedAt = publishedAt;
     }
 

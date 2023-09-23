@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/priceaction")
-@CrossOrigin
+@CrossOrigin("http://localhost:3000/")
 public class PriceActionTraderController {
     @Autowired
     private PriceActionService priceActionService;
@@ -30,7 +32,7 @@ public class PriceActionTraderController {
     public List<PriceActionM1> getAllPriceActions(
             @RequestParam Map<String, String> filters,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+            @RequestParam(name = "pageSize", defaultValue = "20") int pageSize) {
         List<PriceActionM1> allPriceActions = priceActionService.getAllPriceAction();
 
         List<PriceActionM1> filteredPriceActions = allPriceActions.stream()
@@ -50,7 +52,17 @@ public class PriceActionTraderController {
         filterMappings.put("description", PriceActionM1::getDescription);
         filterMappings.put("url", PriceActionM1::getUrl);
         filterMappings.put("urlToImage", PriceActionM1::getUrlToImage);
-        filterMappings.put("publishedAt", PriceActionM1::getPublishedAt);
+//        filterMappings.put("publishedAt", PriceActionM1::getPublishedAt);
+        filterMappings.put("publishedAt", PriceActionM1 -> {
+            Date publishedDate = PriceActionM1.getPublishedAt();
+            if (publishedDate != null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                return dateFormat.format(publishedDate);
+            } else {
+                return null; // Handle null publishedAt value if needed
+            }
+        });
+
         filterMappings.put("content", PriceActionM1::getContent);
 
         for (Map.Entry<String, String> entry : filters.entrySet()) {
